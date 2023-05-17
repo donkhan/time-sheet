@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for, session
 )
 from werkzeug.exceptions import abort
 from time_sheet.auth import login_required
@@ -14,13 +14,16 @@ def index():
     db = get_db()
     uid = g.user['id']
     today = datetime.today()
-    query = 'SELECT id, date, content from ts where user_id = ' + str(uid) + ' and date like "' + today.strftime("%Y-%m") + '%"'
+    role = session['user_role']
+    if role == 'employee':
+        query = 'SELECT ts.id, date, content, user_id, username from ts,user where user_id = ' + str(uid) + ' and date like "' + today.strftime("%Y-%m") + '%"' + ' and user_id = user.id '
+    else:
+        query = 'SELECT ts.id, date, content, user_id, username from ts,user where date like "' + today.strftime("%Y-%m") + '%"' + ' and user_id = user.id'
     tse = db.execute(query).fetchall()
     m = today.month
     if m < 9:
         m = "0" + str(m)
-    print(m, file=sys.stderr)
-    return render_template('ts/index.html', tse=tse, m = m,y = today.year)
+    return render_template('ts/index.html', tse=tse, m = m,y = today.year, role=role)
 
 @login_required
 @bp.route('/filter', methods=('POST',))
@@ -29,10 +32,13 @@ def filter():
     y = request.form['year']
     db = get_db()
     uid = g.user['id']
-    query = 'SELECT id, date, content from ts where user_id = ' + str(uid) + ' and date like "' + y + '-' + m  + '%"' 
-    print(query, file=sys.stderr)
+    role = session['user_role']
+    if role == 'employee':
+        query = 'SELECT ts.id, date, content, user_id, username from ts,user where user_id = ' + str(uid) + ' and date like "' + y + '-' + m  + '%"'  + ' and user_id = user.id'
+    else:
+        query = 'SELECT ts.id, date, content, user_id, username from ts,user where date like "' + y + '-' + m  + '%"'  + ' and user_id = user.id'
     tse = db.execute(query).fetchall()
-    return render_template('ts/index.html', tse=tse, m=m, y = y)
+    return render_template('ts/index.html', tse=tse, m=m, y = y, role=role)
 
 @login_required
 @bp.route('/employer_index')

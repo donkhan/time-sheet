@@ -28,10 +28,7 @@ def login():
             session.clear()
             session['user_id'] = user['id']
             session['user_role'] = role
-            if role == 'employee':
-                return redirect(url_for('index'))
-            else:
-                return redirect(url_for('employer_index'))
+            return redirect(url_for('index'))
         flash(error)
 
     return render_template('auth/login.html')

@@ -45,9 +45,9 @@
     <article class="post">
       <header>
         <div>
-          <h1>{{ ts['date'] }}</h1>
+          <h1>{{ ts['date']  }} {% if role == 'employer' %}({{ ts['username']  }}) {% endif %}</h1>
         </div>
-      
+        
       </header>
       <p class="body">{{ ts['content'] }}</p>
       <a class="action" href="{{ url_for('ts.update', id=ts['id']) }}">Edit</a>
