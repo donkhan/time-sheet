@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('ts.create') }}">New</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% for ts in tse %}
+    <article class="post">
+      <header>
+        <div>
+          <h1>{{ ts['date'] }}</h1>
+        </div>
+      
+      </header>
+      <p class="body">{{ ts['content'] }}</p>
+      <a class="action" href="{{ url_for('ts.update', id=ts['id']) }}">Edit</a>
+      <form action="{{ url_for('ts.delete', id=ts['id']) }}" method="post">
+        <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+      </form>
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
