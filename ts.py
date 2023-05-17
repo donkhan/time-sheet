@@ -16,6 +16,20 @@ def index():
     tse = db.execute(query).fetchall()
     return render_template('ts/index.html', tse=tse)
 
+@login_required
+@bp.route('/filter', methods=('POST',))
+def filter():
+    m = request.form['month']
+    y = request.form['year']
+    print()
+    if int(m) < 10:
+        m = '0' + m
+    db = get_db()
+    uid = g.user['id']
+    query = 'SELECT id, date, content from ts where user_id = ' + str(uid) + ' and date like "' + y + '-' + m  + '%"' 
+    print(query, file=sys.stderr)
+    tse = db.execute(query).fetchall()
+    return render_template('ts/index.html', tse=tse)
 
 @login_required
 @bp.route('/employer_index')
