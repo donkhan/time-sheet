@@ -5,6 +5,7 @@ from werkzeug.exceptions import abort
 from time_sheet.auth import login_required
 from time_sheet.db import get_db
 import sys
+from datetime import datetime
 
 bp = Blueprint('ts', __name__)
 @login_required
@@ -12,24 +13,26 @@ bp = Blueprint('ts', __name__)
 def index():
     db = get_db()
     uid = g.user['id']
-    query = 'SELECT id, date, content from ts where user_id = ' + str(uid)
+    datem = datetime.today().strftime("%Y-%m")
+    query = 'SELECT id, date, content from ts where user_id = ' + str(uid) + ' and date like "' + datem + '%"'
     tse = db.execute(query).fetchall()
-    return render_template('ts/index.html', tse=tse)
+    m = datetime.today().month
+    if m < 9:
+        m = "0" + str(m)
+    print(m, file=sys.stderr)
+    return render_template('ts/index.html', tse=tse, m = m)
 
 @login_required
 @bp.route('/filter', methods=('POST',))
 def filter():
     m = request.form['month']
     y = request.form['year']
-    print()
-    if int(m) < 10:
-        m = '0' + m
     db = get_db()
     uid = g.user['id']
     query = 'SELECT id, date, content from ts where user_id = ' + str(uid) + ' and date like "' + y + '-' + m  + '%"' 
     print(query, file=sys.stderr)
     tse = db.execute(query).fetchall()
-    return render_template('ts/index.html', tse=tse)
+    return render_template('ts/index.html', tse=tse, m=m)
 
 @login_required
 @bp.route('/employer_index')
