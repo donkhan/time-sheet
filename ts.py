@@ -13,14 +13,14 @@ bp = Blueprint('ts', __name__)
 def index():
     db = get_db()
     uid = g.user['id']
-    datem = datetime.today().strftime("%Y-%m")
-    query = 'SELECT id, date, content from ts where user_id = ' + str(uid) + ' and date like "' + datem + '%"'
+    today = datetime.today()
+    query = 'SELECT id, date, content from ts where user_id = ' + str(uid) + ' and date like "' + today.strftime("%Y-%m") + '%"'
     tse = db.execute(query).fetchall()
-    m = datetime.today().month
+    m = today.month
     if m < 9:
         m = "0" + str(m)
     print(m, file=sys.stderr)
-    return render_template('ts/index.html', tse=tse, m = m)
+    return render_template('ts/index.html', tse=tse, m = m,y = today.year)
 
 @login_required
 @bp.route('/filter', methods=('POST',))
@@ -32,7 +32,7 @@ def filter():
     query = 'SELECT id, date, content from ts where user_id = ' + str(uid) + ' and date like "' + y + '-' + m  + '%"' 
     print(query, file=sys.stderr)
     tse = db.execute(query).fetchall()
-    return render_template('ts/index.html', tse=tse, m=m)
+    return render_template('ts/index.html', tse=tse, m=m, y = y)
 
 @login_required
 @bp.route('/employer_index')
