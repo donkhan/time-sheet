@@ -12,31 +12,41 @@
   
   <form method="post" action="{{ url_for('ts.filter') }}">
     <div class="filter">
+      {% if role == 'employer' %}
+        <div class="child">
+          <select name="employee" id="employee">
+            <option value=-1>All</option>
+            {% for e in employees %}
+              <option value={{e['id']}} {% if eid == e['id']  %} selected {% endif %}>{{ e['username'] }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      {% endif %}
       <div class="child">
-    <select name="month" id="month">
-      <option value="01" {% if m == '01' %} selected {% endif %}>January</option>
-      <option value="02" {% if m == '02' %} selected {% endif %}>February</option>
-      <option value="03" {% if m == '03' %} selected {% endif %}>March</option>
-      <option value="04" {% if m == '04' %} selected {% endif %}>April</option>
-      <option value="05" {% if m == '05' %} selected {% endif %}>May</option>
-      <option value="06" {% if m == '06' %} selected {% endif %}>June</option>
-      <option value="07" {% if m == '07' %} selected {% endif %}>July</option>
-      <option value="08" {% if m == '08' %} selected {% endif %}>Aug</option>
-      <option value="09" {% if m == '09' %} selected {% endif %}>September</option>
-      <option value="10" {% if m == '10' %} selected {% endif %}>October</option>
-      <option value="11" {% if m == '11' %} selected {% endif %}>November</option>
-      <option value="12" {% if m == '12' %} selected {% endif %}>December</option>
-    </select>
-  </div>
-  <div class="child">
-    <select name="year" id="year">
-      <option value="2023" {% if y == '2023' %} selected {% endif %}>2023</option>
-      <option value="2024" {% if y == '2024' %} selected {% endif %}>2024</option>
-    </select>
-  </div>
-  <div class="child">  
-    <input type="submit" value="Filter">
-  </div>  
+        <select name="month" id="month">
+          <option value="01" {% if m == '01' %} selected {% endif %}>January</option>
+          <option value="02" {% if m == '02' %} selected {% endif %}>February</option>
+          <option value="03" {% if m == '03' %} selected {% endif %}>March</option>
+          <option value="04" {% if m == '04' %} selected {% endif %}>April</option>
+          <option value="05" {% if m == '05' %} selected {% endif %}>May</option>
+          <option value="06" {% if m == '06' %} selected {% endif %}>June</option>
+          <option value="07" {% if m == '07' %} selected {% endif %}>July</option>
+          <option value="08" {% if m == '08' %} selected {% endif %}>Aug</option>
+          <option value="09" {% if m == '09' %} selected {% endif %}>September</option>
+          <option value="10" {% if m == '10' %} selected {% endif %}>October</option>
+          <option value="11" {% if m == '11' %} selected {% endif %}>November</option>
+          <option value="12" {% if m == '12' %} selected {% endif %}>December</option>
+        </select>
+    </div>
+    <div class="child">
+      <select name="year" id="year">
+        <option value="2023" {% if y == '2023' %} selected {% endif %}>2023</option>
+        <option value="2024" {% if y == '2024' %} selected {% endif %}>2024</option>
+      </select>
+    </div>
+    <div class="child">  
+      <input type="submit" value="Filter">
+    </div>  
   </div>
   </form>
 </div>
@@ -45,7 +55,7 @@
     <article class="post">
       <header>
         <div>
-          <h1>{{ ts['date']  }} {% if role == 'employer' %}({{ ts['username']  }}) {% endif %}</h1>
+          <h1>{{ ts['date']  }} {% if role == 'employer' and eid == "-1" %}({{ ts['username']  }}) {% endif %}</h1>
         </div>
         
       </header>

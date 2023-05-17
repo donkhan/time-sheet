@@ -23,22 +23,33 @@ def index():
     m = today.month
     if m < 9:
         m = "0" + str(m)
-    return render_template('ts/index.html', tse=tse, m = m,y = today.year, role=role)
+    employees = []
+    if role == 'employer':
+        employees = db.execute('SELECT username,id from user where role == "employee"')
+    return render_template('ts/index.html', tse=tse, m = m,y = today.year, role=role, employees = employees)
 
 @login_required
 @bp.route('/filter', methods=('POST',))
 def filter():
     m = request.form['month']
     y = request.form['year']
+    eid = request.form['employee']
+    print(eid, file=sys.stderr)
+    employees = []
     db = get_db()
     uid = g.user['id']
     role = session['user_role']
+    if role == 'employer':
+        employees = db.execute('SELECT username,id from user where role == "employee"')
     if role == 'employee':
         query = 'SELECT ts.id, date, content, user_id, username from ts,user where user_id = ' + str(uid) + ' and date like "' + y + '-' + m  + '%"'  + ' and user_id = user.id'
     else:
         query = 'SELECT ts.id, date, content, user_id, username from ts,user where date like "' + y + '-' + m  + '%"'  + ' and user_id = user.id'
+        if eid != "-1":
+            query += ' and user.id = ' + eid
+    print(query, file=sys.stderr)
     tse = db.execute(query).fetchall()
-    return render_template('ts/index.html', tse=tse, m=m, y = y, role=role)
+    return render_template('ts/index.html', tse=tse, m=m, y = y, role=role, employees = employees, eid=eid)
 
 @login_required
 @bp.route('/employer_index')
