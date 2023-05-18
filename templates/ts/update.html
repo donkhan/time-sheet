@@ -14,14 +14,22 @@
 
     <label for="work_type">Work Type</label>
     <select name="type" id="type">
-      <option value="Work" 'selected'>Work</option>
-      <option value="Leave">Leave</option>
+      <option value="Work" {{'selected' if ts['type'] == 'Work'}} >Work</option>
+      <option value="Leave" {{'selected' if ts['type'] == 'Leave'}} >Leave</option>
+      
     </select>
 
     <label for="content">Work Summary</label>
     <textarea name="content" id="content">{{ ts['content'] }}</textarea>
 
-    <input type="submit" value="Save">
+    <div class="container">
+      <div class="child">
+        <input type="submit" value="Save">
+      </div>
+      <div class="child">
+        <input type="submit" value="Cancel">
+      </div>
+    </div>
   </form>
   <hr>
 {% endblock %}

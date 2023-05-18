@@ -55,12 +55,13 @@ def filter():
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
 def create():
+    print(request.form, file=sys.stderr)
     if request.method == 'POST':
         db = get_db()
         db.execute(
                 'INSERT INTO ts (date, content, hours, type, status,user_id)'
                 ' VALUES (?, ?, ?, ?, ?, ?)',
-                (request.form['date'], request.form['content'], request.form['hours'],'Work',0,g.user['id'])
+                (request.form['date'], request.form['content'], request.form['hours'],request.form['type'],0,g.user['id'])
         )
         db.commit()
         return redirect(url_for('ts.index'))
@@ -87,7 +88,7 @@ def update(id):
         db.execute(
             'UPDATE ts SET content = ?, date = ?, hours = ?, type = ?'
             ' WHERE id = ?',
-            (request.form['content'], request.form['date'], request.form['hours'], 'Work', id)
+            (request.form['content'], request.form['date'], request.form['hours'], request.form['type'], id)
         )
         db.commit()
         return redirect(url_for('ts.index'))
@@ -115,7 +116,6 @@ def accept(id):
         )
     db.commit()
     return redirect(url_for('ts.index'))
-
 
 @bp.route('/<int:id>/decline', methods=('POST',))
 @login_required

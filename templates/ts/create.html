@@ -22,8 +22,13 @@
     <label for="content">Work Summary</label>
     <textarea name="content" id="content">{{ request.form['content'] }}</textarea>
    
-    
-
-    <input type="submit" value="Save">
+    <div class="container">
+      <div class="child">
+        <input type="submit" value="Save">
+      </div>
+      <div class="child">
+        <input type="submit" value="Cancel">
+      </div>
+    </div>
   </form>
 {% endblock %}

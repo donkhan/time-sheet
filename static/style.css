@@ -34,5 +34,5 @@ select { max-width: 200px;}
     width: min-content;
   }
   
-  
+  .fa-input { font-family: FontAwesome, ‘Helvetica Neue’, Helvetica, Arial, sans-serif; }
   
