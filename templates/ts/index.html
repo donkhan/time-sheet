@@ -11,7 +11,7 @@
 {% block content %}
   
   <form method="post" action="{{ url_for('ts.filter') }}">
-    <div class="filter">
+    <div class="container">
       {% if role == 'employer' %}
         <div class="child">
           <select name="employee" id="employee">
@@ -53,19 +53,47 @@
 </div>
   <hr>
   {% for ts in tse %}
-    <article class="post">
+    {% set status = 'declined' if ts['status'] == 2%}
+    <article class="ts">
       <header>
         <div>
-          <h1>{{ ts['date']  }} {% if role == 'employer' and eid == "-1" %}({{ ts['username']  }}) {% endif %}</h1>
+          <h1 class="{{status}}">
+            {{ ts['date']  }} - {{ ts['hours']}} hours of {{ ts['type']}} 
+            {% if role == 'employer' and eid == "-1" %}({{ ts['username']  }}) {% endif %}
+            {% if ts['status'] == 0 %} - Pending {% endif %}
+            {% if ts['status'] == 1 %} - Accepted {% endif %}
+            {% if ts['status'] == 2 %} - Declined {% endif %}
+            {% if role == 'employee' and ts['status'] == 0 %}
+              <a class="action" href="{{ url_for('ts.update', id=ts['id']) }}">Edit</a>
+            {% endif %}
+          </h1>
         </div>
         
       </header>
+      
       <p class="body">{{ ts['content'] }}</p>
-      {% if role == 'employee' %}
-        <a class="action" href="{{ url_for('ts.update', id=ts['id']) }}">Edit</a>
-        <form action="{{ url_for('ts.delete', id=ts['id']) }}" method="post">
-          <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
-        </form>
+      {% if role == 'employee' and ts['status'] == 0  %}
+        <div class="container">
+          <div class="child" >
+            <form action="{{ url_for('ts.delete', id=ts['id']) }}" method="post">
+              <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+            </form>
+          </div>
+        </div>  
+      {% endif %}
+      {% if role == 'employer'  and ts['status'] == 0 %}
+      <div class="container">
+          <div class="child">
+          <form action="{{ url_for('ts.accept', id=ts['id']) }}" method="post">
+            <input type="submit" value="Accept" ">
+          </form>
+        </div>
+        <div class="child">
+          <form action="{{ url_for('ts.decline', id=ts['id']) }}" method="post">
+            <input type="submit" value="Decline" ">
+          </form>
+        </div>
+      </div>  
       {% endif %}
     </article>
     {% if not loop.last %}

@@ -102,3 +102,30 @@ def delete(id):
     db.execute('DELETE FROM ts WHERE id = ?', (id,))
     db.commit()
     return redirect(url_for('ts.index'))
+
+@bp.route('/<int:id>/accept', methods=('POST',))
+@login_required
+def accept(id):
+    get_ts(id)
+    db = get_db()
+    db.execute(
+            'UPDATE ts SET status = ?'
+            ' WHERE id = ?',
+            (1, id)
+        )
+    db.commit()
+    return redirect(url_for('ts.index'))
+
+
+@bp.route('/<int:id>/decline', methods=('POST',))
+@login_required
+def decline(id):
+    get_ts(id)
+    db = get_db()
+    db.execute(
+            'UPDATE ts SET status = ?'
+            ' WHERE id = ?',
+            (2, id)
+        )
+    db.commit()
+    return redirect(url_for('ts.index'))
