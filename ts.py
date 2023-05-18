@@ -26,13 +26,17 @@ def index():
     employees = []
     if role == 'employer':
         employees = db.execute('SELECT username,id from user where role == "employee"')
-    return render_template('ts/index.html', tse=tse, m = m,y = today.year, role=role, employees = employees, eid=-1)
+    return render_template('ts/index.html', tse=tse, m = m, y = today.year, role=role, 
+                           employees = employees, eid=-1, years = ["2023","2024"],
+                           months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"])
 
 @login_required
 @bp.route('/filter', methods=('POST',))
 def filter():
     m = request.form['month']
     y = request.form['year']
+    if int(m) < 10:
+        m = "0" + m
     eid = -1
     employees = []
     db = get_db()
@@ -49,7 +53,9 @@ def filter():
             query += ' and user.id = ' + eid
     print(query, file=sys.stderr)
     tse = db.execute(query).fetchall()
-    return render_template('ts/index.html', tse=tse, m=m, y = y, role=role, employees = employees, eid=eid)
+    return render_template('ts/index.html', tse=tse, m=m, y = y, role=role, 
+                           employees = employees, eid=eid, years = ["2023","2024"],
+                           months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"])
 
 
 @bp.route('/create', methods=('GET', 'POST'))

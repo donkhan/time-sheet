@@ -25,29 +25,24 @@
       
       <div class="child">
         <select name="month" id="month">
-          <option value="01" {{'selected' if "01" == m}}>January</option>
-          <option value="02" {{'selected' if "02" == m}}>February</option>
-          <option value="03" {{'selected' if "03" == m}}>March</option>
-          <option value="04" {{'selected' if "04" == m}}>April</option>
-          <option value="05" {{'selected' if "05" == m}}>May</option>
-          <option value="06" {{'selected' if "06" == m}}>June</option>
-          <option value="07" {{'selected' if "07" == m}}>July</option>
-          <option value="08" {{'selected' if "08" == m}}>Aug</option>
-          <option value="09" {{'selected' if "09" == m}}>September</option>
-          <option value="10" {{'selected' if "10" == m}}>October</option>
-          <option value="11" {{'selected' if "11" == m}}>November</option>
-          <option value="12" {{'selected' if "12" == m}}>December</option>
+          {% for month in months %}
+            <option value={{ loop.index }} {{ 'selected' if m | int == loop.index }}>{{ month }}</option>
+          {% endfor %}    
         </select>
-    </div>
-    <div class="child">
-      <select name="year" id="year">
-        <option value="2023" {{'selected' if "2023" == y}}>2023</option>
-        <option value="2024" {{'selected' if "2024" == y}}>2024</option>
-      </select>
-    </div>
-    <div class="child">  
-      <input type="submit" value="Filter" />
-    </div>  
+      </div>
+
+      <div class="child">
+        <select name="year" id="year">
+          {% for year in years %}
+              <option value={{ year }} {{ 'selected' if y | int == year | int }}>{{ year }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      
+      <div class="child">  
+        <input type="submit" value="Filter" />
+      </div>
+        
   </div>
   </form>
 </div>
