@@ -57,12 +57,18 @@
     <article class="ts">
       <header>
         <div>
-          <h1 class="{{status}}">
+          <h1>
             {{ ts['date']  }} - {{ ts['hours']}} hours of {{ ts['type']}} 
             {% if role == 'employer' and eid == "-1" %}({{ ts['username']  }}) {% endif %}
-            {% if ts['status'] == 0 %} - Pending {% endif %}
-            {% if ts['status'] == 1 %} - Accepted {% endif %}
-            {% if ts['status'] == 2 %} - Declined {% endif %}
+            {% if ts['status'] == 0 %} 
+              <i class="fa fa-question-circle" style="font-size:36px"></i>
+            {% endif %}
+            {% if ts['status'] == 1 %} 
+              <i class="fa fa-check" style="font-size:36px;color:green"></i>
+            {% endif %}
+            {% if ts['status'] == 2 %} 
+              <i class="fa fa-ban" style="font-size:36px;color:red"></i>
+            {% endif %}
             {% if role == 'employee' and ts['status'] == 0 %}
               <a class="action" href="{{ url_for('ts.update', id=ts['id']) }}">Edit</a>
             {% endif %}

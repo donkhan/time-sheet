@@ -33,11 +33,6 @@ select { max-width: 200px;}
     align-items: start;
     width: min-content;
   }
-  .declined{
-    background-color:red
-  }
-  .accepted{
-    background-color: green;
-  }
-
+  
+  
   
