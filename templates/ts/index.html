@@ -2,7 +2,7 @@
 
 {% block header %}
   <h1>{% block title %}{% endblock %}</h1>
-  {% if g.user %}
+  {% if g.user and role == 'employee' %}
     <a class="action" href="{{ url_for('ts.create') }}">New</a>
   {% endif %}
 
@@ -15,33 +15,34 @@
       {% if role == 'employer' %}
         <div class="child">
           <select name="employee" id="employee">
-            <option value=-1>All</option>
+              <option value=-1>All</option>
             {% for e in employees %}
-              <option value={{e['id']}} {% if eid == e['id']  %} selected {% endif %}>{{ e['username'] }}</option>
+                <option value={{e['id']}} {{ 'selected' if eid | int == e['id'] | int }}>{{e['username']}}</option>
             {% endfor %}
           </select>
         </div>
       {% endif %}
+      
       <div class="child">
         <select name="month" id="month">
-          <option value="01" {% if m == '01' %} selected {% endif %}>January</option>
-          <option value="02" {% if m == '02' %} selected {% endif %}>February</option>
-          <option value="03" {% if m == '03' %} selected {% endif %}>March</option>
-          <option value="04" {% if m == '04' %} selected {% endif %}>April</option>
-          <option value="05" {% if m == '05' %} selected {% endif %}>May</option>
-          <option value="06" {% if m == '06' %} selected {% endif %}>June</option>
-          <option value="07" {% if m == '07' %} selected {% endif %}>July</option>
-          <option value="08" {% if m == '08' %} selected {% endif %}>Aug</option>
-          <option value="09" {% if m == '09' %} selected {% endif %}>September</option>
-          <option value="10" {% if m == '10' %} selected {% endif %}>October</option>
-          <option value="11" {% if m == '11' %} selected {% endif %}>November</option>
-          <option value="12" {% if m == '12' %} selected {% endif %}>December</option>
+          <option value="01" {{'selected' if "01" == m}}>January</option>
+          <option value="02" {{'selected' if "02" == m}}>February</option>
+          <option value="03" {{'selected' if "03" == m}}>March</option>
+          <option value="04" {{'selected' if "04" == m}}>April</option>
+          <option value="05" {{'selected' if "05" == m}}>May</option>
+          <option value="06" {{'selected' if "06" == m}}>June</option>
+          <option value="07" {{'selected' if "07" == m}}>July</option>
+          <option value="08" {{'selected' if "08" == m}}>Aug</option>
+          <option value="09" {{'selected' if "09" == m}}>September</option>
+          <option value="10" {{'selected' if "10" == m}}>October</option>
+          <option value="11" {{'selected' if "11" == m}}>November</option>
+          <option value="12" {{'selected' if "12" == m}}>December</option>
         </select>
     </div>
     <div class="child">
       <select name="year" id="year">
-        <option value="2023" {% if y == '2023' %} selected {% endif %}>2023</option>
-        <option value="2024" {% if y == '2024' %} selected {% endif %}>2024</option>
+        <option value="2023" {{'selected' if "2023" == y}}>2023</option>
+        <option value="2024" {{'selected' if "2024" == y}}>2024</option>
       </select>
     </div>
     <div class="child">  
@@ -60,10 +61,12 @@
         
       </header>
       <p class="body">{{ ts['content'] }}</p>
-      <a class="action" href="{{ url_for('ts.update', id=ts['id']) }}">Edit</a>
-      <form action="{{ url_for('ts.delete', id=ts['id']) }}" method="post">
-        <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
-      </form>
+      {% if role == 'employee' %}
+        <a class="action" href="{{ url_for('ts.update', id=ts['id']) }}">Edit</a>
+        <form action="{{ url_for('ts.delete', id=ts['id']) }}" method="post">
+          <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+        </form>
+      {% endif %}
     </article>
     {% if not loop.last %}
       <hr>

@@ -8,8 +8,19 @@
   <form method="post">
     <label for="date">Date</label>
     <input name="date" id="date" value = {{ ts['date'] }} />
-    <label for="content">Content</label>
+
+    <label for="hours">Hours</label>
+    <input name="hours" id="hours" value= {{ ts['hours']}} />
+
+    <label for="work_type">Work Type</label>
+    <select name="type" id="type">
+      <option value="Work" 'selected'>Work</option>
+      <option value="Leave">Leave</option>
+    </select>
+
+    <label for="content">Work Summary</label>
     <textarea name="content" id="content">{{ ts['content'] }}</textarea>
+
     <input type="submit" value="Save">
   </form>
   <hr>

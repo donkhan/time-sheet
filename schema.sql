@@ -16,8 +16,10 @@ create table ts(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     date date,
     content text,
-    user_id id,
-    hours integer
+    user_id integer,
+    hours integer,
+    status integer,
+    type text
 );
 
 

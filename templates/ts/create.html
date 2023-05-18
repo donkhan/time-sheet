@@ -8,8 +8,22 @@
   <form method="post">
     <label for="date">Date</label>
     <input name="date" id="date" type="date"/>
-    <label for="content">Content</label>
+    
+    <label for="hours">Hours</label>
+    <input name="hours" id="hours" value="8" />
+
+    <label for="work_type">Work Type</label>
+    <select name="type" id="type">
+      <option value="Work">Work</option>
+      <option value="Leave">Leave</option>
+    </select>
+
+    <br>
+    <label for="content">Work Summary</label>
     <textarea name="content" id="content">{{ request.form['content'] }}</textarea>
+   
+    
+
     <input type="submit" value="Save">
   </form>
 {% endblock %}

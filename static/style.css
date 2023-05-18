@@ -24,7 +24,8 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 .content textarea { min-height: 12em; resize: vertical; }
 input.danger { color: #cc2f2e; }
 input[type=submit] { align-self: start; min-width: 10em; }
-
+input { max-width: 200px;}
+select { max-width: 200px;}
 .filter {
     display: inline-flex;
     column-gap: 10px;
