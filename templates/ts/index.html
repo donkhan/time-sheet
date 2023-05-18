@@ -44,7 +44,7 @@
       </div>
       {% if role == 'employer' %}
         <div class="child">  
-          <button type="submit" formaction="{{ url_for('ts.gen_report') }}" formmethod="post"> Report</button>
+          <button type="submit" formtarget="_none" formaction="{{ url_for('ts.gen_report') }}" formmethod="post"> Report</button>
         </div>
       {% endif %}
   </div>

@@ -179,11 +179,17 @@ def gen_report():
         else:
             row['work'] = record['hours']
             clocked_hours += record['hours']
-        print(str(record['date']) + "  " + str(record['hours']) + "  " + record['type'], file=sys.stderr)
+
+    query = 'SELECT username from user where id = ' + uid
+    records = db.execute(query).fetchone()
+    user_name = records[0]
+    file_name = user_name + "-" + m + "-" + y + ".pdf"
     half = int(len(data)/2)
     context = {
-        'name' : "Anwar",
-        'consultancy_name' : 'Rizq Solutions',
+        'name' : user_name,
+        'consultancy_name' : 'AGNI Technologies',
+        'consultancy_url' : 'https://agnitechnologies.com/',
+        'img_url' : 'https://agnitechnologies.com/wp-content/uploads/2022/03/PNG-logo.png',
         "data_1": data[0:half],
         "data_2": data[half:],
         "month" : get_months()[int(m)-1],
@@ -191,10 +197,11 @@ def gen_report():
         'total_working_hours': tw,
         'clocked_hours' : clocked_hours,
         'leave_hours' : leave_hours,
-        'holidays' :holidays,
-        'image' : '/static/rizq.jpeg'
+        'holidays' :holidays
     }
-
+    #context['img_url'] = 'https://rizqsolutions.co.uk/wp-content/uploads/2022/09/cropped-Rizq-Logo-No-BG-e1663847241416-3.png'
+    #context['consultancy_name'] = 'Rizq Solution'
+    #context['consultancy_url'] = 'https://rizqsolutions.co.uk/'
     template_loader = jinja2.FileSystemLoader('./')
     template_env = jinja2.Environment(loader=template_loader)
 
@@ -202,10 +209,10 @@ def gen_report():
     output_text = template.render(context)
 
     config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
-    pdfkit.from_string(output_text, 'pdf_generated.pdf', configuration=config, css='static/style.css')
+    pdfkit.from_string(output_text, 'static/' + file_name, configuration=config, css='static/style.css')
 
 
-    return redirect(url_for('ts.index'))
+    return redirect('static/' + file_name)
 
 def get_days_of_month(m,y):
     if m == 1 or m == 3 or m == 5 or m == 7 or m == 8 or m == 10 or m == 12:

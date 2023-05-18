@@ -1,8 +1,10 @@
 <div>
-  <img src="http://localhost:5000/static/rizq.jpeg" width="120" height="90" />  
+  <img src="{{ img_url }}" width="120" height="90" />  
+  
 <p><strong>Monthly Time Sheet : {{ month }} - {{ year }}</strong></p>
 <p><strong>External Consultant : {{ name }}</strong></p>
-<p><strong>Consultancy : {{ consultancy_name }}</strong></p>
+<p><strong>Consultancy : </strong><a href="{{ consultancy_url }}">{{ consultancy_name }}</a></p>
+
 </div>
 
 <hr>
@@ -26,17 +28,17 @@
     <table>
         <tbody>
               <tr>
-                <td style="border: 1px solid black; padding: 8px 16px;">Date</td>
-                <td style="border: 1px solid black; padding: 8px 16px;">Day</td>
-                <td style="border: 1px solid black; padding: 8px 16px;">Work</td>
-                <td style="border: 1px solid black; padding: 8px 16px;">Leave</td>
+                <td>Date</td>
+                <td>Day</td>
+                <td>Work</td>
+                <td>Leave</td>
               </tr>
               {% for d in data_1 %}
               <tr>
-                <td style="border: 1px solid black; padding: 8px 16px;">{{ d['date'] }}</td>
-                <td style="border: 1px solid black; padding: 8px 16px;">{{ d['day'] }} </td>
-                <td style="border: 1px solid black; padding: 8px 16px;">{{ d['work'] }} </td>
-                <td style="border: 1px solid black; padding: 8px 16px;">{{ d['leave'] }} </td>
+                <td>{{ d['date'] }}</td>
+                <td>{{ d['day'] }} </td>
+                <td>{{ d['work'] }} </td>
+                <td>{{ d['leave'] }} </td>
               </tr>
               {% endfor %}
         </tbody>
@@ -46,24 +48,24 @@
     <table>
         <tbody>
               <tr>
-                <td style="border: 1px solid black; padding: 8px 16px;">Date</td>
-                <td style="border: 1px solid black; padding: 8px 16px;">Day</td>
-                <td style="border: 1px solid black; padding: 8px 16px;">Work</td>
-                <td style="border: 1px solid black; padding: 8px 16px;">Leave</td>
+                <td>Date</td>
+                <td>Day</td>
+                <td>Work</td>
+                <td>Leave</td>
               </tr>
               {% for d in data_2 %}
               <tr>
-                <td style="border: 1px solid black; padding: 8px 16px;">{{ d['date'] }}</td>
-                <td style="border: 1px solid black; padding: 8px 16px;">{{ d['day'] }} </td>
-                <td style="border: 1px solid black; padding: 8px 16px;">{{ d['work'] }} </td>
-                <td style="border: 1px solid black; padding: 8px 16px;">{{ d['leave'] }} </td>
+                <td>{{ d['date'] }}</td>
+                <td>{{ d['day'] }} </td>
+                <td>{{ d['work'] }} </td>
+                <td>{{ d['leave'] }} </td>
               </tr>
               {% endfor %}
               <tr>
-                <td style="border: 1px solid black; padding: 8px 16px;"></td>
-                <td style="border: 1px solid black; padding: 8px 16px;">Total</td>
-                <td style="border: 1px solid black; padding: 8px 16px;">{{clocked_hours}}</td>
-                <td style="border: 1px solid black; padding: 8px 16px;">{{leave_hours}}</td>
+                <td></td>
+                <td>Total</td>
+                <td>{{clocked_hours}}</td>
+                <td>{{leave_hours}}</td>
               </tr>
         </tbody>
     </table>

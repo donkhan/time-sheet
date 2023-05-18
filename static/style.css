@@ -67,6 +67,8 @@ select { max-width: 200px;}
   th, td {
     text-align: left;
     padding: 16px;
+    border: 1px solid black; 
+    padding: 8px 16px;
   }
   
   tr:nth-child(even) {
