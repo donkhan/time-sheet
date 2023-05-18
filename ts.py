@@ -159,12 +159,10 @@ def gen_report():
         tw += working_hours(i,m,y,days[i])
         holidays += holiday(i,m,y,days[i])
         data.append(d)
-
     
-
     db = get_db()
     uid = request.form['employee']
-    uid = "1"
+    #uid = "1"
     if int(m) < 10:
         m = "0" + m
     query = 'SELECT ts.id, date, content, user_id, hours, type, status from ts where user_id = ' + str(uid) + ' and date like "' + y + '-' + m  + '%"' 
