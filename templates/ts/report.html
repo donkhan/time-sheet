@@ -1,0 +1,78 @@
+<div>
+  <img src="http://localhost:5000/static/rizq.jpeg" width="120" height="90" />  
+<p><strong>Monthly Time Sheet : {{ month }} - {{ year }}</strong></p>
+<p><strong>External Consultant : {{ name }}</strong></p>
+<p><strong>Consultancy : {{ consultancy_name }}</strong></p>
+</div>
+
+<hr>
+
+<div>
+  <h1>Summary</h1>
+  <p><strong>Total Working Hours : {{ total_working_hours }}</strong></p>
+  <p><strong>Clocked Hours : {{ clocked_hours }}</strong></p>
+  <p><strong>Hours on Leave : {{ leave_hours }}</strong></p>
+  <p><strong>Percentage of Hours Clocked : {{ '%0.2f' | format(clocked_hours*100/total_working_hours | float) }}%</strong></p>
+  <p><strong>Holidays (including weekends): {{ holidays }}</strong></p>
+</div>
+
+<hr>
+
+<div>
+  <h1> Detailed </h1>
+<figure class="table">
+  <div class="row">
+    <div class="column">
+    <table>
+        <tbody>
+              <tr>
+                <td style="border: 1px solid black; padding: 8px 16px;">Date</td>
+                <td style="border: 1px solid black; padding: 8px 16px;">Day</td>
+                <td style="border: 1px solid black; padding: 8px 16px;">Work</td>
+                <td style="border: 1px solid black; padding: 8px 16px;">Leave</td>
+              </tr>
+              {% for d in data_1 %}
+              <tr>
+                <td style="border: 1px solid black; padding: 8px 16px;">{{ d['date'] }}</td>
+                <td style="border: 1px solid black; padding: 8px 16px;">{{ d['day'] }} </td>
+                <td style="border: 1px solid black; padding: 8px 16px;">{{ d['work'] }} </td>
+                <td style="border: 1px solid black; padding: 8px 16px;">{{ d['leave'] }} </td>
+              </tr>
+              {% endfor %}
+        </tbody>
+    </table>
+   </div>
+   <div class="column">
+    <table>
+        <tbody>
+              <tr>
+                <td style="border: 1px solid black; padding: 8px 16px;">Date</td>
+                <td style="border: 1px solid black; padding: 8px 16px;">Day</td>
+                <td style="border: 1px solid black; padding: 8px 16px;">Work</td>
+                <td style="border: 1px solid black; padding: 8px 16px;">Leave</td>
+              </tr>
+              {% for d in data_2 %}
+              <tr>
+                <td style="border: 1px solid black; padding: 8px 16px;">{{ d['date'] }}</td>
+                <td style="border: 1px solid black; padding: 8px 16px;">{{ d['day'] }} </td>
+                <td style="border: 1px solid black; padding: 8px 16px;">{{ d['work'] }} </td>
+                <td style="border: 1px solid black; padding: 8px 16px;">{{ d['leave'] }} </td>
+              </tr>
+              {% endfor %}
+              <tr>
+                <td style="border: 1px solid black; padding: 8px 16px;"></td>
+                <td style="border: 1px solid black; padding: 8px 16px;">Total</td>
+                <td style="border: 1px solid black; padding: 8px 16px;">{{clocked_hours}}</td>
+                <td style="border: 1px solid black; padding: 8px 16px;">{{leave_hours}}</td>
+              </tr>
+        </tbody>
+    </table>
+   </div>
+  </div>  
+</figure>
+</div>
+
+<div>
+  <hr>
+  <span style="flex:1">This is an electronically generated document. </span>
+</div>

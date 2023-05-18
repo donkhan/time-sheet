@@ -7,6 +7,10 @@ from time_sheet.db import get_db
 import sys
 from datetime import datetime
 
+import jinja2
+import pdfkit
+from datetime import datetime
+
 bp = Blueprint('ts', __name__)
 @login_required
 @bp.route('/')
@@ -28,7 +32,7 @@ def index():
         employees = db.execute('SELECT username,id from user where role == "employee"')
     return render_template('ts/index.html', tse=tse, m = m, y = today.year, role=role, 
                            employees = employees, eid=-1, years = ["2023","2024"],
-                           months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"])
+                           months = get_months())
 
 @login_required
 @bp.route('/filter', methods=('POST',))
@@ -55,13 +59,12 @@ def filter():
     tse = db.execute(query).fetchall()
     return render_template('ts/index.html', tse=tse, m=m, y = y, role=role, 
                            employees = employees, eid=eid, years = ["2023","2024"],
-                           months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"])
+                           months = get_months())
 
 
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
 def create():
-    print(request.form, file=sys.stderr)
     if request.method == 'POST':
         db = get_db()
         db.execute(
@@ -88,7 +91,6 @@ def get_ts(id):
 @login_required
 def update(id):
     ts = get_ts(id)
-    print(ts, file=sys.stderr)
     if request.method == 'POST':
         db = get_db()
         db.execute(
@@ -98,7 +100,6 @@ def update(id):
         )
         db.commit()
         return redirect(url_for('ts.index'))
-    print("rendering template ", file=sys.stderr)
     return render_template('ts/update.html', ts=ts)
 
 @bp.route('/<int:id>/delete', methods=('POST',))
@@ -135,3 +136,100 @@ def decline(id):
         )
     db.commit()
     return redirect(url_for('ts.index'))
+
+
+@login_required
+@bp.route('/gen_report', methods=('POST',))
+def gen_report():
+    print("Gen Report", file=sys.stderr)
+    m = request.form['month']
+    y = request.form['year']
+    no_of_dates = get_days_of_month(m,y) + 1
+    w = datetime.strptime("1-" + m + "-" + y, "%d-%m-%Y").strftime('%w')
+    data = []
+    days = get_days_list(no_of_dates,w)
+    tw = 0
+    holidays = 0
+    clocked_hours = 0
+    leave_hours = 0
+    for i in range(1, no_of_dates):
+        d = dict()
+        d['date'] = i
+        d['day'] = days[i]
+        tw += working_hours(i,m,y,days[i])
+        holidays += holiday(i,m,y,days[i])
+        data.append(d)
+
+    
+
+    db = get_db()
+    uid = request.form['employee']
+    uid = "1"
+    if int(m) < 10:
+        m = "0" + m
+    query = 'SELECT ts.id, date, content, user_id, hours, type, status from ts where user_id = ' + str(uid) + ' and date like "' + y + '-' + m  + '%"' 
+    print(query, file=sys.stderr)
+    records = db.execute(query).fetchall()
+    for record in records:
+        index = int(str(record['date']).split("-")[2])
+        row = data[index-1]
+        if str(record['type']) == 'Leave':
+            row['leave'] = record['hours']
+            leave_hours += record['hours']
+        else:
+            row['work'] = record['hours']
+            clocked_hours += record['hours']
+        print(str(record['date']) + "  " + str(record['hours']) + "  " + record['type'], file=sys.stderr)
+    half = int(len(data)/2)
+    context = {
+        'name' : "Anwar",
+        'consultancy_name' : 'Rizq Solutions',
+        "data_1": data[0:half],
+        "data_2": data[half:],
+        "month" : get_months()[int(m)-1],
+        "year": y,
+        'total_working_hours': tw,
+        'clocked_hours' : clocked_hours,
+        'leave_hours' : leave_hours,
+        'holidays' :holidays,
+        'image' : '/static/rizq.jpeg'
+    }
+
+    template_loader = jinja2.FileSystemLoader('./')
+    template_env = jinja2.Environment(loader=template_loader)
+
+    template = template_env.get_template('templates/ts/report.html')
+    output_text = template.render(context)
+
+    config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
+    pdfkit.from_string(output_text, 'pdf_generated.pdf', configuration=config, css='static/style.css')
+
+
+    return redirect(url_for('ts.index'))
+
+def get_days_of_month(m,y):
+    if m == 1 or m == 3 or m == 5 or m == 7 or m == 8 or m == 10 or m == 12:
+        return 31
+    if m == 2:
+        return 28
+    return 30
+
+def get_days_list(no_of_dates,w):
+    w = int(w)
+    l = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+    l = l[w:len(l)] + l[0:w]
+    l = l * 5
+    return l[0:no_of_dates]
+
+def get_months():
+    return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+    
+def working_hours(d,m,y,w):
+    if w == 'Sun' or w == 'Sat':
+        return 0
+    return 8
+
+def holiday(d,m,y,w):
+    if w == 'Sun' or w == 'Sat':
+        return 1
+    return 8
