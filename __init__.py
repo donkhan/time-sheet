@@ -3,42 +3,35 @@ import os
 from flask import Flask
 
 
-def create_app(test_config=None):
-    # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'time_sheet.sqlite'),
-    )
 
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
+# create and configure the app
+app = Flask(__name__, instance_relative_config=True)
+app.config.from_mapping(
+    SECRET_KEY='dev',
+    DATABASE=os.path.join(app.instance_path, '/home/kamilukrizq/time-sheet/instance/time_sheet.sqlite'),
+)
 
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
 
-    from . import db
-    db.init_app(app)
 
-    from . import auth
-    app.register_blueprint(auth.bp)
+# ensure the instance folder exists
+try:
+    os.makedirs(app.instance_path)
+except OSError:
+    pass
 
-    from . import ts
-    app.register_blueprint(ts.bp)
-    app.add_url_rule('/', endpoint='index')
-    app.add_url_rule('/employer_index', endpoint='employer_index')
-    
+import db
+db.init_app(app)
 
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
+import auth
+app.register_blueprint(auth.bp)
+
+import ts
+app.register_blueprint(ts.bp)
+
+
+# a simple page that says hello
+@app.route('/hello')
+def hello():
+    return 'Hello, World!'
 
     return app

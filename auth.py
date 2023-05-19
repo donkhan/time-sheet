@@ -4,7 +4,7 @@ import sys
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
-from time_sheet.db import get_db
+from db import get_db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -28,7 +28,7 @@ def login():
             session.clear()
             session['user_id'] = user['id']
             session['user_role'] = role
-            return redirect(url_for('index'))
+            return redirect(url_for('ts.index'))
         flash(error)
 
     return render_template('auth/login.html')

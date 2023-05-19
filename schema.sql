@@ -8,9 +8,10 @@ CREATE TABLE user (
   role text
 );
 
-insert into user values (1,"Kamil","a","AGNI","employee");
-insert into user values (3,"Eial","a","AGNI","employee");
-insert into user values (2,"Kaushik","a","AGNI","employer");
+insert into user values (1,"Kamil","a","Rizq","employee");
+insert into user values (3,"Anwar","a","Rizq","employee");
+insert into user values (4,"Peer","a","Rizq","employee");
+insert into user values (2,"Ali","a","Rizq","employer");
 
 create table ts(
     id INTEGER PRIMARY KEY AUTOINCREMENT,

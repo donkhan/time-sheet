@@ -2,8 +2,8 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, session
 )
 from werkzeug.exceptions import abort
-from time_sheet.auth import login_required
-from time_sheet.db import get_db
+from auth import login_required
+from db import get_db
 import sys
 from datetime import datetime
 
@@ -30,7 +30,7 @@ def index():
     employees = []
     if role == 'employer':
         employees = db.execute('SELECT username,id from user where role == "employee"')
-    return render_template('ts/index.html', tse=tse, m = m, y = today.year, role=role, 
+    return render_template('ts/index.html', tse=tse, m = m, y = today.year, role=role,
                            employees = employees, eid=-1, years = ["2023","2024"],
                            months = get_months())
 
@@ -57,7 +57,7 @@ def filter():
             query += ' and user.id = ' + eid
     print(query, file=sys.stderr)
     tse = db.execute(query).fetchall()
-    return render_template('ts/index.html', tse=tse, m=m, y = y, role=role, 
+    return render_template('ts/index.html', tse=tse, m=m, y = y, role=role,
                            employees = employees, eid=eid, years = ["2023","2024"],
                            months = get_months())
 
@@ -159,13 +159,13 @@ def gen_report():
         tw += working_hours(i,m,y,days[i])
         holidays += holiday(i,m,y,days[i])
         data.append(d)
-    
+
     db = get_db()
     uid = request.form['employee']
     #uid = "1"
     if int(m) < 10:
         m = "0" + m
-    query = 'SELECT ts.id, date, content, user_id, hours, type, status from ts where user_id = ' + str(uid) + ' and date like "' + y + '-' + m  + '%"' 
+    query = 'SELECT ts.id, date, content, user_id, hours, type, status from ts where user_id = ' + str(uid) + ' and date like "' + y + '-' + m  + '%"'
     print(query, file=sys.stderr)
     records = db.execute(query).fetchall()
     for record in records:
@@ -179,8 +179,8 @@ def gen_report():
             clocked_hours += record['hours']
 
     query = 'SELECT username from user where id = ' + uid
-    records = db.execute(query).fetchone()
-    user_name = records[0]
+    #records = db.execute(query).fetchone()
+    user_name = "Kamil"
     file_name = user_name + "-" + m + "-" + y + ".pdf"
     half = int(len(data)/2)
     context = {
@@ -197,17 +197,17 @@ def gen_report():
         'leave_hours' : leave_hours,
         'holidays' :holidays
     }
-    #context['img_url'] = 'https://rizqsolutions.co.uk/wp-content/uploads/2022/09/cropped-Rizq-Logo-No-BG-e1663847241416-3.png'
-    #context['consultancy_name'] = 'Rizq Solution'
-    #context['consultancy_url'] = 'https://rizqsolutions.co.uk/'
-    template_loader = jinja2.FileSystemLoader('./')
+    context['img_url'] = 'https://rizqsolutions.co.uk/wp-content/uploads/2022/09/cropped-Rizq-Logo-No-BG-e1663847241416-3.png'
+    context['consultancy_name'] = 'Rizq Solution'
+    context['consultancy_url'] = 'https://rizqsolutions.co.uk/'
+    template_loader = jinja2.FileSystemLoader('/')
     template_env = jinja2.Environment(loader=template_loader)
 
-    template = template_env.get_template('templates/ts/report.html')
+    template = template_env.get_template('/home/kamilukrizq/time-sheet/templates/ts/report.html')
     output_text = template.render(context)
 
-    config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
-    pdfkit.from_string(output_text, 'static/' + file_name, configuration=config, css='static/style.css')
+    config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')
+    pdfkit.from_string(output_text, '/home/kamilukrizq/time-sheet/static/' + file_name, configuration=config, css='/home/kamilukrizq/time-sheet/static/style.css')
 
 
     return redirect('static/' + file_name)
@@ -228,7 +228,7 @@ def get_days_list(no_of_dates,w):
 
 def get_months():
     return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
-    
+
 def working_hours(d,m,y,w):
     if w == 'Sun' or w == 'Sat':
         return 0
