@@ -141,7 +141,6 @@ def decline(id):
 @login_required
 @bp.route('/gen_report', methods=('POST',))
 def gen_report():
-    print("Gen Report", file=sys.stderr)
     m = request.form['month']
     y = request.form['year']
     no_of_dates = get_days_of_month(m,y) + 1
@@ -162,7 +161,8 @@ def gen_report():
     
     db = get_db()
     uid = request.form['employee']
-    #uid = "1"
+    if uid == "-1":
+        return redirect(url_for('ts.index'))
     if int(m) < 10:
         m = "0" + m
     query = 'SELECT ts.id, date, content, user_id, hours, type, status from ts where user_id = ' + str(uid) + ' and date like "' + y + '-' + m  + '%"' 
@@ -208,8 +208,6 @@ def gen_report():
 
     config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
     pdfkit.from_string(output_text, 'static/' + file_name, configuration=config, css='static/style.css')
-
-
     return redirect('static/' + file_name)
 
 def get_days_of_month(m,y):
