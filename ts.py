@@ -179,8 +179,9 @@ def gen_report():
             clocked_hours += record['hours']
 
     query = 'SELECT username from user where id = ' + uid
-    #records = db.execute(query).fetchone()
-    user_name = "Kamil"
+    records = db.execute(query).fetchone()
+    print(query, file=sys.stderr)
+    user_name = records[0];
     file_name = user_name + "-" + m + "-" + y + ".pdf"
     half = int(len(data)/2)
     context = {
@@ -197,7 +198,7 @@ def gen_report():
         'leave_hours' : leave_hours,
         'holidays' :holidays
     }
-    context['img_url'] = 'https://rizqsolutions.co.uk/wp-content/uploads/2022/09/cropped-Rizq-Logo-No-BG-e1663847241416-3.png'
+    context['img_url'] = '/home/kamilukrizq/time-sheet/static/rizq.png'
     context['consultancy_name'] = 'Rizq Solution'
     context['consultancy_url'] = 'https://rizqsolutions.co.uk/'
     template_loader = jinja2.FileSystemLoader('/')
