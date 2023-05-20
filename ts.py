@@ -15,6 +15,8 @@ bp = Blueprint('ts', __name__)
 @login_required
 @bp.route('/')
 def index():
+    if g.user is None:
+        return redirect("/auth/login")
     db = get_db()
     uid = g.user['id']
     today = datetime.today()
@@ -162,13 +164,13 @@ def gen_report():
 
     db = get_db()
     uid = request.form['employee']
-   
+
     if uid == "-1":
         return redirect(url_for('ts.index'))
     if int(m) < 10:
         m = "0" + m
     query = 'SELECT ts.id, date, content, user_id, hours, type, status from ts where user_id = ' + str(uid) + ' and date like "' + y + '-' + m  + '%"'
-    query = 'SELECT ts.id, date, content, user_id, hours, type, status from ts where user_id = ' + str(uid) + ' and date like "' + y + '-' + m  + '%"' 
+    query = 'SELECT ts.id, date, content, user_id, hours, type, status from ts where user_id = ' + str(uid) + ' and date like "' + y + '-' + m  + '%"'
     records = db.execute(query).fetchall()
     for record in records:
         index = int(str(record['date']).split("-")[2])
