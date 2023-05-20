@@ -16,6 +16,8 @@ bp = Blueprint('ts', __name__)
 @bp.route('/')
 def index():
     db = get_db()
+    if g.user is None:
+        return redirect('/auth/login')
     uid = g.user['id']
     today = datetime.today()
     role = session['user_role']
