@@ -152,21 +152,23 @@ def gen_report():
     holidays = 0
     clocked_hours = 0
     leave_hours = 0
-    for i in range(1, no_of_dates):
+    for i in range(1, no_of_dates+1):
         d = dict()
         d['date'] = i
-        d['day'] = days[i]
-        tw += working_hours(i,m,y,days[i])
-        holidays += holiday(i,m,y,days[i])
+        d['day'] = days[i-1]
+        tw += working_hours(i,m,y,days[i-1])
+        holidays += holiday(i,m,y,days[i-1])
         data.append(d)
 
     db = get_db()
     uid = request.form['employee']
-    #uid = "1"
+   
+    if uid == "-1":
+        return redirect(url_for('ts.index'))
     if int(m) < 10:
         m = "0" + m
     query = 'SELECT ts.id, date, content, user_id, hours, type, status from ts where user_id = ' + str(uid) + ' and date like "' + y + '-' + m  + '%"'
-    print(query, file=sys.stderr)
+    query = 'SELECT ts.id, date, content, user_id, hours, type, status from ts where user_id = ' + str(uid) + ' and date like "' + y + '-' + m  + '%"' 
     records = db.execute(query).fetchall()
     for record in records:
         index = int(str(record['date']).split("-")[2])
