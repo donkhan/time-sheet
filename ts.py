@@ -32,8 +32,13 @@ def list():
         m = "0" + str(m)
     employees = []
     if role == 'employer':
+<<<<<<< HEAD
         employees = db.execute('SELECT username,id from user where role == "employee"')
     return render_template('ts/index.html', tse=tse, m = m, y = today.year, role=role,
+=======
+        employees = db.execute('SELECT username,id from user where role == "employee" and user.companyId = ' + str(uid))
+    return render_template('ts/index.html', tse=tse, m = m, y = today.year, role=role, 
+>>>>>>> d1ef259 (made to handle both agni and rizq reports)
                            employees = employees, eid=-1, years = ["2023","2024"],
                            months = get_months())
 
@@ -176,6 +181,7 @@ def gen_report():
     for record in records:
         index = int(str(record['date']).split("-")[2])
         row = data[index-1]
+        row['content'] = record['content']
         if str(record['type']) == 'Leave':
             row['leave'] = record['hours']
             leave_hours += record['hours']
@@ -183,7 +189,7 @@ def gen_report():
             row['work'] = record['hours']
             clocked_hours += record['hours']
 
-    query = 'SELECT username from user where id = ' + uid
+    query = 'SELECT username,name,imgURL, url from user,company where user.id = ' + uid + ' and user.companyId = company.id'
     records = db.execute(query).fetchone()
     print(query, file=sys.stderr)
     user_name = records[0];
@@ -191,9 +197,9 @@ def gen_report():
     half = int(len(data)/2)
     context = {
         'name' : user_name,
-        'consultancy_name' : 'AGNI Technologies',
-        'consultancy_url' : 'https://agnitechnologies.com/',
-        'img_url' : 'https://agnitechnologies.com/wp-content/uploads/2022/03/PNG-logo.png',
+        'consultancy_name' : records[1],
+        'consultancy_url' : records[3],
+        'img_url' : records[2],
         "data_1": data[0:half],
         "data_2": data[half:],
         "month" : get_months()[int(m)-1],
@@ -203,13 +209,16 @@ def gen_report():
         'leave_hours' : leave_hours,
         'holidays' :holidays
     }
-    context['img_url'] = '/home/kamilukrizq/time-sheet/static/rizq.png'
-    context['consultancy_name'] = 'Rizq Solution'
-    context['consultancy_url'] = 'https://rizqsolutions.co.uk/'
-    template_loader = jinja2.FileSystemLoader('/')
+    if  records[1] == "AGNI Technologies" :
+        context["data"] = data
+    template_loader = jinja2.FileSystemLoader('./')
     template_env = jinja2.Environment(loader=template_loader)
 
-    template = template_env.get_template('/home/kamilukrizq/time-sheet/templates/ts/report.html')
+    template = template_env.get_template('templates/ts/agni_report.html')
+    
+    if records[1] == "Rizq Solutions":
+        template = template_env.get_template('templates/ts/report.html')
+    
     output_text = template.render(context)
 
     config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')
