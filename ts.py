@@ -13,8 +13,8 @@ from datetime import datetime
 
 bp = Blueprint('ts', __name__)
 @login_required
-@bp.route('/')
-def index():
+@bp.route('/list')
+def list():
     db = get_db()
     if g.user is None:
         return redirect('/auth/login')

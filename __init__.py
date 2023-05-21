@@ -23,7 +23,7 @@ app.register_blueprint(auth.bp)
 
 from . import ts
 app.register_blueprint(ts.bp)
-app.add_url_rule('/', endpoint='index')
+app.add_url_rule('/', endpoint='ts.list')
     
 
 # a simple page that says hello
