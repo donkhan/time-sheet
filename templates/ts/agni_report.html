@@ -1,0 +1,62 @@
+<div>
+  <img src="{{ img_url }}" width="120" height="90" />  
+  
+<p><strong>Monthly Time Sheet : {{ month }} - {{ year }}</strong></p>
+<p><strong>External Consultant : {{ name }}</strong></p>
+<p><strong>Consultancy : </strong><a href="{{ consultancy_url }}">{{ consultancy_name }}</a></p>
+
+</div>
+
+<hr>
+
+<div>
+  <h1>Summary</h1>
+  <p><strong>Total Working Hours : {{ total_working_hours }}</strong></p>
+  <p><strong>Clocked Hours : {{ clocked_hours }}</strong></p>
+  <p><strong>Hours on Leave : {{ leave_hours }}</strong></p>
+  <p><strong>Percentage of Hours Clocked : {{ '%0.2f' | format(clocked_hours*100/total_working_hours | float) }}%</strong></p>
+  <p><strong>Holidays (including weekends): {{ holidays }} Hours</strong></p>
+</div>
+
+<hr>
+
+<div>
+  <h1> Detailed </h1>
+<figure class="table">
+  <div class="row">
+   <div class="column">
+    <table>
+        <tbody>
+              <tr>
+                <td>Date</td>
+                <td>Day</td>
+                <td>Work</td>
+                <td>Leave</td>
+                <td>Description</td>
+              </tr>
+              {% for d in data %}
+              <tr>
+                <td>{{ d['date'] }}</td>
+                <td>{{ d['day'] }} </td>
+                <td>{{ d['work'] }} </td>
+                <td>{{ d['leave'] }} </td>
+                <td>{{ d['content'] }} </td>
+              </tr>
+              {% endfor %}
+              <tr>
+                <td></td>
+                <td>Total</td>
+                <td>{{clocked_hours}}</td>
+                <td>{{leave_hours}}</td>
+              </tr>
+        </tbody>
+    </table>
+   </div>
+  </div>  
+</figure>
+</div>
+
+<div>
+  <hr>
+  <span style="flex:1">This is an electronically generated document. </span>
+</div>
