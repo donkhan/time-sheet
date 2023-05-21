@@ -75,7 +75,7 @@ def create():
                 (request.form['date'], request.form['content'], request.form['hours'],request.form['type'],0,g.user['id'])
         )
         db.commit()
-        return redirect(url_for('ts.index'))
+        return redirect(url_for('ts.list'))
     return render_template('ts/create.html')
 
 
@@ -101,7 +101,7 @@ def update(id):
             (request.form['content'], request.form['date'], request.form['hours'], request.form['type'], id)
         )
         db.commit()
-        return redirect(url_for('ts.index'))
+        return redirect(url_for('ts.list'))
     return render_template('ts/update.html', ts=ts)
 
 @bp.route('/<int:id>/delete', methods=('POST',))
@@ -111,7 +111,7 @@ def delete(id):
     db = get_db()
     db.execute('DELETE FROM ts WHERE id = ?', (id,))
     db.commit()
-    return redirect(url_for('ts.index'))
+    return redirect(url_for('ts.list'))
 
 @bp.route('/<int:id>/accept', methods=('POST',))
 @login_required
@@ -124,7 +124,7 @@ def accept(id):
             (1, id)
         )
     db.commit()
-    return redirect(url_for('ts.index'))
+    return redirect(url_for('ts.list'))
 
 @bp.route('/<int:id>/decline', methods=('POST',))
 @login_required
@@ -137,7 +137,7 @@ def decline(id):
             (2, id)
         )
     db.commit()
-    return redirect(url_for('ts.index'))
+    return redirect(url_for('ts.list'))
 
 
 @login_required
