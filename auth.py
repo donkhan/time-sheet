@@ -23,8 +23,8 @@ def login():
             error = 'Incorrect username.'
         elif user['password'] !=  password:
             error = 'Incorrect password.'
-        role = user['role']
         if error is None:
+            role = user['role']
             session.clear()
             session['user_id'] = user['id']
             session['user_role'] = role
