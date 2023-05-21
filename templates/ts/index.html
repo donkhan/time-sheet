@@ -61,7 +61,7 @@
         <div>
           <h1>
             {{ ts['date']  }} - {{ ts['hours']}} hours of {{ ts['type']}} 
-            {% if role == 'employer' and eid == "-1" %}({{ ts['username']  }}) {% endif %}
+            {% if role == 'employer' and eid == -1 %}({{ ts['username']  }}) {% endif %}
             {% if ts['status'] == 0 %} 
               <i class="fa fa-question-circle" style="font-size:36px"></i>
             {% endif %}
