@@ -29,11 +29,12 @@ app.register_blueprint(auth.bp)
 
 import ts
 app.register_blueprint(ts.bp)
-
 @app.route('/')
 def home():
     return redirect('/auth/login')
 
+app.add_url_rule('/', endpoint='ts.list')
+    
 # a simple page that says hello
 @app.route('/hello')
 def hello():

@@ -28,7 +28,7 @@ def login():
             session.clear()
             session['user_id'] = user['id']
             session['user_role'] = role
-            return redirect(url_for('ts.index'))
+            return redirect(url_for('ts.list'))
         flash(error)
 
     return render_template('auth/login.html')
