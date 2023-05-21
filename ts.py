@@ -60,7 +60,7 @@ def filter():
     print(query, file=sys.stderr)
     tse = db.execute(query).fetchall()
     return render_template('ts/index.html', tse=tse, m=m, y = y, role=role, 
-                           employees = employees, eid=eid, years = ["2023","2024"],
+                           employees = employees, eid=int(eid), years = ["2023","2024"],
                            months = get_months())
 
 
